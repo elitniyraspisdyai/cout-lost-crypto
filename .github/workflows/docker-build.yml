@@ -48,6 +48,33 @@ jobs:
 
       - name: Build Rust release
         working-directory: seed-brute
+name: Build and Publish Docker Image
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    env:
+      IMAGE_NAME: lost-crypto-scout
+      REGISTRY: ghcr.io
+      REPO: ${{ github.repository }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Rust
+        uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+          override: true
+
+      - name: Build Rust release
+        working-directory: seed-brute
         run: cargo build --release
 
       - name: Set up Python
@@ -61,7 +88,7 @@ jobs:
       - name: Log in to GitHub Container Registry
         uses: docker/login-action@v2
         with:
-          registry: ghcr.io
+          registry: ${{ env.REGISTRY }}
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
@@ -72,8 +99,8 @@ jobs:
           file: Dockerfile
           push: true
           tags:
-            - ghcr.io/${{ env.REPO }}/${{ env.IMAGE_NAME }}:latest
-            - ghcr.io/${{ env.REPO }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
+            - ${{ env.REGISTRY }}/${{ env.REPO }}/${{ env.IMAGE_NAME }}:latest
+            - ${{ env.REGISTRY }}/${{ env.REPO }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
 
       - name: Image digest
         run: echo "Image digest: ${{ steps.build-and-push.outputs.digest }}"
