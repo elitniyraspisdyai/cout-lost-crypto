@@ -40,7 +40,8 @@ jobs:
       - name: Build and push Docker image
         uses: docker/build-push-action@v4
         with:
-          context: seed-brute
-          file: seed-brute/Dockerfile
+          context: .
+          file: './Dockerfile'
           push: true
-          tags: ghcr.io/${{ github.repository }}/lost-crypto-scout:latest
+          tags: |
+            ghcr.io/${{ github.repository }}/lost-crypto-scout:latest
