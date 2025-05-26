@@ -1,56 +1,10 @@
-name: Build and Publish Docker Image
+name: Test YAML
 
 on:
-  push:
-    branches: [ main ]
   workflow_dispatch:
 
 jobs:
-  build-and-push:
-    runs-on: ubuntu-latestn: ubuntu-latest
-    env:
-      IMAGE_NAME: lost-crypto-scout
-      REGISTRY: ghcr.io
-      REPO: ${{ github.repository }}
+  test:
+    runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-
-      - name: Set up Rust
-        uses: actions-rs/toolchain@v1
-        with:
-          toolchain: stable
-          override: true
-
-      - name: Build Rust release
-        working-directory: seed-brute
-        run: cargo build --release
-
-      - name: Set up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.12'
-
-      - name: Install Python deps
-        run: pip install bip-utils
-
-      - name: Log in to GitHub Container Registry
-        uses: docker/login-action@v2
-        with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Build and push Docker image
-        uses: docker/build-push-action@v4
-        with:
-          context: .
-          file: Dockerfile
-          push: true
-          tags:
-            - ghcr.io/${{ env.REPO }}/${{ env.IMAGE_NAME }}:latest
-            - ghcr.io/${{ env.REPO }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
-
-      - name: Image digest
-        run: echo "Image digest: ${{ steps.build-and-push.outputs.digest }}"
-
+      - run: echo "Hello, Actions!"
