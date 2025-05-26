@@ -2,36 +2,12 @@ name: Build and Publish Docker Image
 
 on:
   push:
-    branches:
-      - main
-  workflow_dispatch:
-
-env:
-  IMAGE_NAME: lost-crypto-scout
-  REGISTRY: ghcr.io
-  REPO: ${{ github.repository }}
-
-jobs:
-  build-and-push:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-
-      - name: Set up Rust
-        uses: actions-rs/toolchain@v1
-        with:
-          toolchain: stable
-          name: Build and Publish Docker Image
-
-on:
-  push:
     branches: [ main ]
   workflow_dispatch:
 
 jobs:
   build-and-push:
-    runs-o
+    runs-on: ubuntu-latestn: ubuntu-latest
     env:
       IMAGE_NAME: lost-crypto-scout
       REGISTRY: ghcr.io
@@ -45,53 +21,6 @@ jobs:
         with:
           toolchain: stable
           override: true
-
-      - name: Build Rust release
-        working-directory: seed-brute
-name: Build and Publish Docker Image
-
-on:
-  push:
-    branches:
-      - main
-  workflow_dispatch:
-
-jobs:
-  build-and-push:
-    runs-on: ubuntu-latest
-    env:
-      IMAGE_NAME: lost-crypto-scout
-      REGISTRY: ghcr.io
-      REPO: ${{ github.repository }}
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-
-      - name: Set up Rust
-        uses: actions-rs/toolchain@v1
-        with:
-          toolchain: stable
-          override: true
-name: Build and Publish Docker Image
-
-on:
-  push:
-    branches:
-      - main
-  workflow_dispatch:
-
-jobs:
-  build:
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-
-      - name: Set up Rust
-        uses: actions-rs/toolchain@v1
-        with:
-          toolchain: stable
 
       - name: Build Rust release
         working-directory: seed-brute
@@ -119,5 +48,9 @@ jobs:
           file: Dockerfile
           push: true
           tags:
-            - ghcr.io/${{ github.repository }}/lost-crypto-scout:latest
-            - ghcr.io/${{ github.repository }}/lost-crypto-scout:${{ github.sha }}
+            - ghcr.io/${{ env.REPO }}/${{ env.IMAGE_NAME }}:latest
+            - ghcr.io/${{ env.REPO }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
+
+      - name: Image digest
+        run: echo "Image digest: ${{ steps.build-and-push.outputs.digest }}"
+
