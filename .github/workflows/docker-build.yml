@@ -4,10 +4,12 @@ on:
   push:
     branches:
       - main
+  workflow_dispatch:
 
 jobs:
   build:
     runs-on: ubuntu-latest
+
     steps:
       - uses: actions/checkout@v3
 
@@ -28,7 +30,7 @@ jobs:
       - name: Install Python deps
         run: pip install bip-utils
 
-      - name: Log in to GHCR
+      - name: Log in to GitHub Container Registry
         uses: docker/login-action@v2
         with:
           registry: ghcr.io
@@ -38,7 +40,7 @@ jobs:
       - name: Build and push Docker image
         uses: docker/build-push-action@v4
         with:
-          context: .
-          file: Dockerfile
+          context: seed-brute
+          file: seed-brute/Dockerfile
           push: true
           tags: ghcr.io/${{ github.repository }}/lost-crypto-scout:latest
