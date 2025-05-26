@@ -44,6 +44,4 @@ jobs:
           context: .
           file: Dockerfile
           push: true
-          tags:
-            - ghcr.io/${{ github.repository }}/lost-crypto-scout:latest
-            - ghcr.io/${{ github.repository }}/lost-crypto-scout:${{ github.sha }}
+          tags: ghcr.io/${{ github.repository }}/lost-crypto-scout:latest
