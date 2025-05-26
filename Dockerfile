@@ -1,3 +1,11 @@
+# 1) Stage: build Rust binary
+FROM rust:1.87 AS builder
+WORKDIR /usr/src/seed-brute
+
+COPY seed-brute/Cargo.toml seed-brute/Cargo.lock ./
+COPY seed-brute/src ./src
+RUN cargo build --release
+
 # 2) Final image
 FROM python:3.12-slim
 WORKDIR /app
